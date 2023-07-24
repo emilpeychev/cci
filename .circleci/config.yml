@@ -17,6 +17,7 @@ jobs:
           command: |
             pip install --upgrade pip
             pip install -r requirements.txt
+            pip install pytest  # Install pytest package
         # Install the Python dependencies listed in '.circleci/requirements/requirements.txt'
 
       - run:
