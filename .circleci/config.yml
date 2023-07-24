@@ -4,19 +4,33 @@ workflows:
   test-build:
     jobs:
       - test
-      # Uncomment or remove the following line if you want to include the 'build' job in the workflow.
-      # - build
+      - build
 
 jobs:
   test:
     docker:
-      - image: cimg/python:3.11.4
+      - image: cimg/python:3.9
     steps:
       - checkout
-      - run: Install dependencies 
-        command: pip install -r requirements.txt
-        # Install the Python dependencies listed in 'requirements.txt'
+      - run:
+          name: Install dependencies
+          command: |
+            pip install --upgrade pip
+            pip install -r requirements.txt
+            pip install pytest 
+        # Install the Python dependencies listed in '.circleci/requirements/requirements.txt'
 
-      - run: Python Test
-        command: pytest
+      - run:
+          name: Python Test
+          command: pytest
         # Run Python tests using pytest
+
+
+  build:
+    docker:
+      - image: cimg/python:3.9
+    steps:
+      - checkout
+      - run:
+          name: Build Docker image
+          command: docker build -t hello-world .
