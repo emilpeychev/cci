@@ -1,7 +1,13 @@
-# app/app.py
+from flask import Flask
+app = Flask(__name__)
 
-def say_hello():
-    return "Hello, Docker World!"
+@app.route('/')
+def hello_world():
+    return 'Hello World!'
 
-if __name__ == "__main__":
-    print(say_hello())
+@app.route('/health')
+def health_check():
+    return 'Health OK'
+
+if __name__ == '__main__':
+    app.run(debug=False, host='0.0.0.0')
