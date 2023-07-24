@@ -3,7 +3,7 @@ version: 2
 # Define the CircleCI pipeline configuration version
 
 orbs:
-  docker: circleci/docker@x.y.z
+  docker: circleci/docker@1.1.0
   # Import the Docker orb to use Docker-related functionality in the pipeline
 
 executors:
