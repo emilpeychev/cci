@@ -14,7 +14,7 @@ jobs:
     steps:
       - checkout
       - run: Install dependencies 
-        command: pip install -r requirements.txt
+        command: pip install
         # Install the Python dependencies listed in 'requirements.txt'
 
       - run: Python Test
