@@ -24,11 +24,7 @@ jobs:
           name: Python Test
           command: pytest
         # Run Python tests using pytest
-      - run:
-          name: Python Test
-          command: |
-            export PATH=$PATH:/path/to/pytest/bin
-            pytest
+        
 
   build:
     docker:
