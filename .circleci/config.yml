@@ -1,52 +1,14 @@
-version: 2
-
-# Updated the CircleCI pipeline configuration version
-
-orbs:
-  docker: circleci/docker@1.1.0
-  # Updated to use version 1.1.0 of the Docker orb
-
-executors:
-  python-3.9:
-    docker:
-      - image: circleci/python:3.9
+version: 2.1
+workflow:
+  test-build:
+    jobs:
+      -test
+      #- build
 
 jobs:
-  build_and_push:
-    executor: python-3.9
-
+  test:
+    docker:
+      - image: cimg/python:3.11.4
     steps:
       - checkout
-
-      # Install any dependencies required for building your app (if needed)
-      # For example, you can use pip to install dependencies specified in requirements.txt.
-
-      - run:
-          name: Build Docker Image
-          command: |
-            docker build -t hello_world_app .
-            # Updated the Docker image tag to 'hello_world_app'
-
-            docker tag hello_world_app:latest softunium/circleci-test:latest
-            # Updated the Docker image tag for pushing to DockerHub
-
-      # Log in to DockerHub using a DockerHub personal access token
-      - run:
-          name: Log in to DockerHub
-          command: |
-            cat dockerhub_token.txt | docker login -u $DOCKERHUB_USERNAME --password-stdin
-            # Use the DockerHub personal access token as the password
-
-      # Push the Docker image to DockerHub
-      - run:
-          name: Push Docker Image to DockerHub
-          command: |
-            docker push softunium/circleci-test:latest
-            # Updated the DockerHub repository name for pushing the Docker image
-
-workflows:
-  version: 2
-  build_and_push:
-    jobs:
-      - build_and_push
-
+      - run: python --version
