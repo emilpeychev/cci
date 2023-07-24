@@ -13,4 +13,8 @@ jobs:
       - image: cimg/python:3.11.4
     steps:
       - checkout
-      - run: python --version
+      - run: Install dependencies 
+        command: pip install -r requirements.txt
+      - run: Python Test
+        command: pytest
+
