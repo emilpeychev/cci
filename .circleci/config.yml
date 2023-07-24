@@ -9,7 +9,7 @@ workflows:
 jobs:
   test:
     docker:
-      - image: cimg/python:3.11.4
+      - image: cimg/python:3.9
     steps:
       - checkout
       - run:
@@ -17,18 +17,18 @@ jobs:
           command: |
             pip install --upgrade pip
             pip install -r requirements.txt
-            pip install pytest  # Install pytest package
+            pip install pytest 
         # Install the Python dependencies listed in '.circleci/requirements/requirements.txt'
 
       - run:
           name: Python Test
           command: pytest
         # Run Python tests using pytest
-        
+
 
   build:
     docker:
-      - image: cimg/python:3.11.4
+      - image: cimg/python:3.9
     steps:
       - checkout
       # Add the steps for building your application here
