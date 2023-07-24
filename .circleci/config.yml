@@ -1,10 +1,11 @@
 version: 2.1
 
-workflow:
+workflows:
   test-build:
     jobs:
-      -test
-      
+      - test
+      # Uncomment or remove the following line if you want to include the 'build' job in the workflow.
+      # - build
 
 jobs:
   test:
