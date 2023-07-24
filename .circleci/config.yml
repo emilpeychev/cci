@@ -4,8 +4,8 @@ workflows:
   test-build:
     jobs:
       - test
-      - build  # Add the 'build' job here
-      
+      - build
+
 jobs:
   test:
     docker:
@@ -13,16 +13,18 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install dependencies 
-          command: pip install -r requirements.txt
-        # Install the Python dependencies listed in 'requirements.txt'
+          name: Install dependencies
+          command: |
+            pip install --upgrade pip
+            pip install -r /requirements/requirements.txt
+        # Install the Python dependencies listed in '.circleci/requirements/requirements.txt'
 
       - run:
           name: Python Test
           command: pytest
         # Run Python tests using pytest
 
-  build:  # New 'build' job definition
+  build:
     docker:
       - image: cimg/python:3.11.4
     steps:
