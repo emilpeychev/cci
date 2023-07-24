@@ -4,19 +4,28 @@ workflows:
   test-build:
     jobs:
       - test
-      # Uncomment or remove the following line if you want to include the 'build' job in the workflow.
-      # - build
-
+      - build  # Add the 'build' job here
+      
 jobs:
   test:
     docker:
       - image: cimg/python:3.11.4
     steps:
       - checkout
-      - run: Install dependencies 
-        command: pip install -r requirements.txt
+      - run:
+          name: Install dependencies 
+          command: pip install -r requirements.txt
         # Install the Python dependencies listed in 'requirements.txt'
 
-      - run: Python Test
-        command: pytest
+      - run:
+          name: Python Test
+          command: pytest
         # Run Python tests using pytest
+
+  build:  # New 'build' job definition
+    docker:
+      - image: cimg/python:3.11.4
+    steps:
+      - checkout
+      # Add the steps for building your application here
+      # For example, you can run commands to compile assets, build binaries, etc.
