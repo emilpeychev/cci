@@ -1,26 +1,22 @@
 version: 2
 
-# Define the CircleCI pipeline configuration version
+# Updated the CircleCI pipeline configuration version
 
 orbs:
   docker: circleci/docker@1.1.0
-  # Import the Docker orb to use Docker-related functionality in the pipeline
+  # Updated to use version 1.1.0 of the Docker orb
 
 executors:
-  # Define the executor named 'python-3.9'
   python-3.9:
     docker:
       - image: circleci/python:3.9
-    # Use the CircleCI Python 3.9 image as the base image for this executor
 
 jobs:
   build_and_push:
     executor: python-3.9
-    # Use the 'python-3.9' executor to run the 'build_and_push' job
 
     steps:
       - checkout
-      # Check out the source code from the repository
 
       # Install any dependencies required for building your app (if needed)
       # For example, you can use pip to install dependencies specified in requirements.txt.
@@ -28,30 +24,29 @@ jobs:
       - run:
           name: Build Docker Image
           command: |
-            docker build -t my_python_app .
-            # Build the Docker image and tag it as 'my_python_app'
+            docker build -t hello_world_app .
+            # Updated the Docker image tag to 'hello_world_app'
 
-            docker tag my_python_app:latest your-dockerhub-username/my_python_app:latest
-            # Tag the Docker image with your DockerHub username and repository name
+            docker tag hello_world_app:latest softunium/circleci-test:latest
+            # Updated the Docker image tag for pushing to DockerHub
 
-      # Log in to DockerHub using environment variables
+      # Log in to DockerHub using a DockerHub personal access token
       - run:
           name: Log in to DockerHub
           command: |
-            echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
-            # Use environment variables 'DOCKERHUB_USERNAME' and 'DOCKERHUB_PASSWORD'
-            # to log in to DockerHub
+            cat dockerhub_token.txt | docker login -u $DOCKERHUB_USERNAME --password-stdin
+            # Use the DockerHub personal access token as the password
 
       # Push the Docker image to DockerHub
       - run:
           name: Push Docker Image to DockerHub
           command: |
             docker push softunium/circleci-test:latest
-            # Push the Docker image to DockerHub with your DockerHub username and repository name
+            # Updated the DockerHub repository name for pushing the Docker image
 
 workflows:
   version: 2
   build_and_push:
     jobs:
       - build_and_push
-      # Run the 'build_and_push' job as part of the 'build_and_push' workflow
+
