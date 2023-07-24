@@ -31,5 +31,7 @@ jobs:
       - image: cimg/python:3.9
     steps:
       - checkout
-      # Add the steps for building your application here
-      # For example, you can run commands to compile assets, build binaries, etc.
+      - run:
+          name: Build Docker image
+          command: docker build -t helloworld .
+
