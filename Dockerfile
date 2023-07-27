@@ -8,6 +8,8 @@ WORKDIR /app
 COPY app /app
 
 # Install the required Python packages
+COPY requirements.txt /app  # Use an absolute path here
+
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Stage 2: Create a lightweight production image
@@ -24,3 +26,4 @@ EXPOSE 8000
 
 # Define the command to run your application
 CMD ["python", "app.py"]
+
