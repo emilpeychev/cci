@@ -5,7 +5,6 @@ workflows:
     jobs:
       - build
       - test
-      - push
 
 jobs:
   test:
@@ -49,5 +48,3 @@ jobs:
             docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_TOKEN
             docker tag hello-world $DOCKERHUB_USERNAME/hello-world
             docker push $DOCKERHUB_USERNAME/hello-world
-        environment:
-        DOCKER_CLI_ACI: "1"
