@@ -1,0 +1,53 @@
+version: 2.1
+
+workflows:
+  test-build:
+    jobs:
+      - build
+      - test
+      - push
+
+jobs:
+  test:
+    docker:
+      - image: cimg/python:3.9
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            pip install --upgrade pip
+            pip install -r requirements.txt 
+        # Install the Python dependencies listed in 'requirements.txt'
+
+      - run:
+          name: Python Test
+          command: pytest
+        # Run Python tests using pytest
+
+  build:
+    docker:
+      - image: docker:20.10.11
+        environment:
+          DOCKER_HOST: tcp://localhost:2375
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: 20.10.11
+          docker_layer_caching: true
+        # Set up Docker using the Docker executor
+
+  build-and-push:
+    docker:
+      - image: docker:20.10.11
+    steps:
+      - checkout
+      - run:
+          name: Build and Push Docker image
+          command: |
+            docker build -t hello-world .
+            docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_TOKEN
+            docker tag hello-world $DOCKERHUB_USERNAME/hello-world
+            docker push $DOCKERHUB_USERNAME/hello-world
+        environment:
+        DOCKER_CLI_ACI: "1"
