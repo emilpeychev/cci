@@ -7,9 +7,6 @@ WORKDIR /app
 # Copy the application code to the container
 COPY app /app
 
-# Install build dependencies (if needed)
-# For example, if your application has specific build requirements or dependencies, install them here.
-
 # Install the required Python packages
 RUN pip install --no-cache-dir -r requirements.txt
 
@@ -27,4 +24,3 @@ EXPOSE 8000
 
 # Define the command to run your application
 CMD ["python", "app.py"]
-
