@@ -8,7 +8,7 @@ WORKDIR /app
 COPY app /app
 
 # Install the required Python packages
-COPY requirements.txt /app  # Use an absolute path here
+COPY requirements.txt /app  
 
 RUN pip install --no-cache-dir -r requirements.txt
 
@@ -26,4 +26,3 @@ EXPOSE 8000
 
 # Define the command to run your application
 CMD ["python", "app.py"]
-
