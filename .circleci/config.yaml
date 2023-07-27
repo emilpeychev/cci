@@ -1,10 +1,5 @@
 version: 2.1
 
-executors:
-  default:
-    docker:
-      - image: cimg/python:3.9
-
 workflows:
   test-build:
     jobs:
@@ -13,7 +8,8 @@ workflows:
 
 jobs:
   test:
-    executor: default
+    docker:
+      - image: cimg/python:3.9
     steps:
       - checkout
       - run:
@@ -29,9 +25,24 @@ jobs:
         # Run Python tests using pytest
 
   build:
-    executor: default
+    machine:
+      enabled: true
     steps:
       - checkout
+      - setup_remote_docker:
+          version: 20.10.11
+        # Setup remote Docker to build the Docker image
+
       - run:
           name: Build Docker image
-          command: docker build -t hello-world .
+          command: |
+            docker build -t hello-world .
+        # Build the Docker image using the Dockerfile
+
+      - run:
+          name: Push Docker image
+          command: |
+            docker tag hello-world:latest your-dockerhub-username/hello-world:latest
+            docker login -u your-dockerhub-username -p your-dockerhub-password
+            docker push your-dockerhub-username/hello-world:latest
+        # Tag and push the Docker image to a Docker registry (e.g., Docker Hub)
