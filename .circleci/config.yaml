@@ -3,8 +3,8 @@ version: 2.1
 workflows:
   test-build:
     jobs:
-      - build
       - test
+      - build
 
 jobs:
   test:
@@ -16,8 +16,9 @@ jobs:
           name: Install dependencies
           command: |
             pip install --upgrade pip
-            pip install -r requirements.txt 
-        # Install the Python dependencies listed in 'requirements.txt'
+            pip install -r .circleci/requirements/requirements.txt
+            pip install pytest  # Install pytest package
+        # Install the Python dependencies listed in '.circleci/requirements/requirements.txt'
 
       - run:
           name: Python Test
@@ -25,24 +26,19 @@ jobs:
         # Run Python tests using pytest
 
   build:
-    machine:
-      enabled: true
+    docker:
+      - image: cimg/python:3.9
     steps:
       - checkout
-      - setup_remote_docker:
-          version: 20.10.11
-        # Setup remote Docker to build the Docker image
-
+      - setup_remote_docker:  # This enables Docker-in-Docker (DinD) in CircleCI
+          version: 20.10.7
       - run:
           name: Build Docker image
-          command: |
-            docker build -t hello-world .
-        # Build the Docker image using the Dockerfile
+          command: docker build -t helloworld .
+        # Build the Docker image for your application with the tag "helloworld"
+        # The '.' at the end specifies the build context as the current directory
 
       - run:
           name: Push Docker image
-          command: |
-            docker tag hello-world:latest your-dockerhub-username/hello-world:latest
-            docker login -u your-dockerhub-username -p your-dockerhub-password
-            docker push your-dockerhub-username/hello-world:latest
-        # Tag and push the Docker image to a Docker registry (e.g., Docker Hub)
+          command: docker push helloworld
+        # Optionally, push the Docker image to a container registry like Docker Hub
