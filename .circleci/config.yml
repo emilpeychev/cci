@@ -42,19 +42,10 @@ jobs:
       - image: docker:20.10.11
     steps:
       - checkout
-      - setup_remote_docker:
-          version: 20.10.11
-          docker_layer_caching: true
-        # Set up Docker using the Docker executor
-
       - run:
-          name: Authenticate with Docker Hub
+          name: Build and Push Docker image
           command: |
-            echo '$DOCKER_CONFIG' > /root/.docker/config.json
             docker build -t hello-world .
-            docker login
+            docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_TOKEN
             docker tag hello-world $DOCKERHUB_USERNAME/hello-world
             docker push $DOCKERHUB_USERNAME/hello-world
-        environment:
-          DOCKER_CONFIG: '${{ runner.workspace }}/.docker'
-
