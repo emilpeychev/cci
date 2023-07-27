@@ -5,7 +5,6 @@ workflows:
     jobs:
       - build
       - test
-      - push
 
 jobs:
   test:
@@ -37,7 +36,7 @@ jobs:
           docker_layer_caching: true
         # Set up Docker using the Docker executor
 
-  push:
+  build-and-push:
     docker:
       - image: docker:20.10.11
     steps:
