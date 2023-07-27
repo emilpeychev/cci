@@ -25,13 +25,16 @@ jobs:
         # Run Python tests using pytest
 
   build:
-    machine:
-      enabled: true
+    docker:
+      - image: docker:20.10.11
+        environment:
+          DOCKER_HOST: tcp://localhost:2375
     steps:
       - checkout
       - setup_remote_docker:
           version: 20.10.11
-        # Setup remote Docker to build the Docker image
+          docker_layer_caching: true
+        # Set up Docker using the Docker executor
 
       - run:
           name: Build Docker image
@@ -42,9 +45,7 @@ jobs:
       - run:
           name: Push Docker image
           command: |
-            docker tag hello-world:latest your-dockerhub-username/hello-world:latest
-            docker login -u your-dockerhub-username -p your-dockerhub-password
-            docker push your-dockerhub-username/hello-world:latest
+            echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+            docker tag hello-world:latest "$DOCKERHUB_USERNAME/hello-world:latest"
+            docker push "$DOCKERHUB_USERNAME/hello-world:latest"
         # Tag and push the Docker image to a Docker registry (e.g., Docker Hub)
-
-        
