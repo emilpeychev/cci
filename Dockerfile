@@ -21,6 +21,9 @@ WORKDIR /app
 # Copy only necessary files from the builder stage
 COPY --from=builder /app /app
 
+# Install the required Python packages in the final image
+RUN pip install --no-cache-dir -r requirements.txt
+
 # Expose any required ports (if your application listens on a specific port)
 EXPOSE 8000
 

@@ -47,4 +47,4 @@ jobs:
             docker build -t hello-world .
             docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_TOKEN
             docker tag hello-world $DOCKERHUB_USERNAME/hello-world
-            docker push softunium/circleci-test/hello-world
+            docker push $DOCKERHUB_USERNAME/hello-world
