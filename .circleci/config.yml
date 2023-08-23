@@ -2,6 +2,7 @@ version: 2.1
 
 jobs:
   build:
+
     docker:
       - image: cimg/python:3.11.4
     working_directory: ~/app
@@ -14,9 +15,9 @@ jobs:
           name: Build the Image 
           command: docker build -t flask-app .
     filters:
-    branches:
-      only:
-        - build
+      branches:
+        only:
+          - build
 
 workflows:
   version: 2
