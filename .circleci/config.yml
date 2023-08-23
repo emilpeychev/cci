@@ -15,7 +15,7 @@ jobs:
           command: echo $CIRCLE_BRANCH
       - run:
           name: Run test
-          command: python -m test_app.py
+          command: python -m unittest discover -s app -p "*_test.py"
       - run:
           name: Build the Image 
           command: docker build -t flask-app .
