@@ -11,10 +11,6 @@ jobs:
           name: Show current branch
           command: echo $CIRCLE_BRANCH
       - run:
-          name: Install dependencies
-          command: |
-            pipenv install
-      - run:
           name: Build the Image 
           command: docker build -t flask-app .
 workflows:
