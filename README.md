@@ -30,69 +30,85 @@ workflows:
 
 ```
 
-1. Default pipeline breakdown.
-2. Components:
+## What is what/ a pipeline breakdown
 
-- version: 2.1
-- jobs /a pipeline is composed of different jobs.
-- name / just a job name.
+### version: 2.1
 
-```txt
-Environments (aka Executors):
+Minimal version allowed.
 
-- docker/ machine/ mac/
-- CircleCI offers several execution environments to run your jobs:
-- docker (Linux), machine (LinuxVM, Windows, GPU, Arm), or macos.
-```
+### Jobs
 
-- steps
+A Workflow is comprised of one or more uniquely named jobs.
 
-```txt
-Steps setting in a job is a list of single key/value pairs.
-The value may be either a configuration map or a string.
+* Isolation: Each job runs in its own isolated environment, which helps ensure that the job's execution doesn't interfere with other jobs.
 
-- run (means run a command)
-- run/ allows us to directly specify which command to execute as a string value.
-- it also supports run 'shell' for specific shells.
-Example: 
-```
+* Independence: Jobs can be run independently and in parallel, which speeds up the overall pipeline execution.
+
+* Definition: A job's definition includes the steps, commands, environment settings, and other configuration needed to accomplish its tasks.
+
+* Dependencies: Jobs can have dependencies on other jobs, meaning they can be triggered to run only after certain conditions or previous jobs have been met.
+
+* Artifacts: Jobs can produce artifacts, which are files or data generated during the job's execution. These artifacts can be used in subsequent jobs or stages of the pipeline.
+
+* Execution Environment: Jobs can run in different execution environments, such as Docker containers, virtual machines, or other platforms.
 
 ```py
-jobs:
-  build:
+jobs: #name
+  say-hello:
+    # place where code is pulled by -checkout, within the Docker container.
     working_directory: ~/canary-python
-    environment:
-      FOO: bar
+    # Environment
+    docker:
+      - image: cimg/base:stable
+    # Steps of the job 
     steps:
       - run:
           name: Running tests
           command: make test
 ```
 
+## Environments
+
+```txt
+Environments:
+
+- docker/ machine/ mac/
+- CircleCI offers several execution environments to run your jobs:
+- docker (Linux), machine (LinuxVM, Windows, GPU, Arm), or macos.
+```
+
+### Steps
+
 ```py
 jobs:
   build:
+  # name
     steps:
       - checkout
+      # Pull the code from repo
+    - run: #step
+    # run commands   
+        name: Running tests
+        command: make test
+        # you can replace command with 'shell' if the script requires it.
+    - run: #step
+        name: test
+    - run: #step
+        name: deploy
 ```
 
+### Workflows
+
+Jobs are part of a workflow named "say-hello-workflow" which specifies the sequence of jobs to be executed.
+
+### Summary
+
 ```txt
-Explained:
 Fetching Code/ The "checkout" step connects Git repository and fetches the latest version of your codebase.
 - Checkout is always first. followed by 'run commands'.
 
-Working Directory: The fetched code is placed into a designated working directory within the CircleCI environment/executor. This directory becomes the base directory for all subsequent steps in your pipeline. Any steps you define under "run" or other step types will operate within this working directory.
+Working Directory: The fetched code is placed into a designated working directory within the CircleCI environment/executor. This directory becomes the base directory for all subsequent steps in your pipeline. 
+Any steps you define under "run" or other step types will operate within this working directory.
 
 Subsequent Steps: After the "checkout" step, you can define other steps that use the checked-out code. For example, you might have steps for Building, Testing, and Deploying your code. 
-```
-
-```py
-Pipeline
-├── Step 1: Checkout (Fetch code)
-├── Step 2: Run - Install Dependencies
-├── Step 3: Run - Run Tests
-├── Step 4: Run - Build
-├── Step 5: Run - Deploy
-└── Step 6: Run - Notify
-
 ```
