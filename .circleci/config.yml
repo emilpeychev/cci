@@ -7,12 +7,12 @@ job:
     working_dirertoty: ~/app
     steps:
       -checkout
-        - run:
-          name: Show current branch
-            command: echo $(CURRENT_BRANCH)
-        - run:
-          name: Build the Image 
-            command: docker-build -t flask-app .
+      - run:
+        name: Show current branch
+          command: echo $(CURRENT_BRANCH)
+      - run:
+        name: Build the Image 
+          command: docker-build -t flask-app .
     filters:
       branches:
         only:
