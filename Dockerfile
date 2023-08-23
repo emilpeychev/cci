@@ -5,7 +5,7 @@ FROM python:3.11.4
 WORKDIR /app
 
 # Copy the requirements file and install dependencies
-RUN pip install --upgrade
+RUN pip install --upgrade pip
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 RUN python -m unittest discover -s tests -p "test.py"
