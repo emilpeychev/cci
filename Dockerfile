@@ -7,6 +7,7 @@ WORKDIR /app
 # Copy the requirements file and install dependencies
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
+RUN python -m unittest discover -s tests -p "test.py"
 
 # Copy the rest of the application code to the container
 COPY app app
