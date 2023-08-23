@@ -14,11 +14,6 @@ jobs:
       - run:
           name: Build the Image 
           command: docker build -t flask-app .
-    filters:
-      branches:
-        only:
-          - build
-
 workflows:
   version: 2
   build:
