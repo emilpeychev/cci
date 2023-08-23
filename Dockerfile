@@ -1,32 +1,23 @@
-# Stage 1: Build the Python application
-FROM python:3.9 as builder
+# Use the official Python image as the base image
+FROM python:3.11.4
 
-# Set working directory
+# Set the working directory within the container
 WORKDIR /app
 
-# Copy the application code to the container
-COPY app /app
+# Copy the requirements file and install dependencies
+COPY requirements.txt requirements.txt
+RUN pip install -r requirements.txt
 
-# Install the required Python packages
-COPY requirements.txt /app  
+# Copy the rest of the application code to the container
+COPY app app
 
-RUN pip install --no-cache-dir -r requirements.txt
+# Expose the port that the Flask app will run on
+EXPOSE 5000
 
-# Stage 2: Create a lightweight production image
-FROM python:3.9-slim
+# Set environment variables (optional)
+ENV FLASK_APP=app.py
+ENV FLASK_RUN_HOST=0.0.0.0
 
-# Set working directory
-WORKDIR /app
+# Command to run the Flask application
+CMD ["flask", "run"]
 
-# Copy only necessary files from the builder stage
-COPY --from=builder /app /app
-
-# Install the required Python packages in the final image
-RUN pip install --upgrade
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Expose any required ports (if your application listens on a specific port)
-EXPOSE 8000
-
-# Define the command to run your application
-CMD ["python", "app.py"]
