@@ -17,3 +17,8 @@ job:
       branches:
         only:
           - build
+
+workflows:
+  build
+    jobs:
+      - build
