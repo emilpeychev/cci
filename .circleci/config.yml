@@ -4,7 +4,7 @@ jobs:
   build_and_push:
     docker:
       - image: cimg/python:3.11.4
-    working_directory: /tmp
+    working_directory: ~/tmp
     steps:
       - checkout
       - run:
@@ -13,7 +13,7 @@ jobs:
       - run:
           name: Build the Image 
           command: docker build -t 324221743401.dkr.ecr.eu-west-3.amazonaws.com/flask-image .
-          working_directory: /tmp
+          working_directory: ~/tmp
 
       - setup_remote_docker:
           version: 20.10.14
