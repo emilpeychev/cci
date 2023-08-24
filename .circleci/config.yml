@@ -1,5 +1,6 @@
 version: 2.1
-
+orbs:
+  aws-cli: circleci/aws-cli@4.0.0
 jobs:
   build_and_push:
     docker:
@@ -17,9 +18,6 @@ jobs:
 
       - setup_remote_docker:
           version: 20.10.14
-      - run:
-          name: Install AWS CLI
-          command: sudo apt-get install -y awscli  # This assumes a Ubuntu-based image
       - run:
           name: Configure AWS Environment
           command: |
