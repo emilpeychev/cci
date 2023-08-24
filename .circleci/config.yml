@@ -4,7 +4,7 @@ jobs:
   build:
     docker:
       - image: cimg/python:3.11.4
-    working_directory: ~/app
+    working_directory: /tmp
     steps:
       - setup_remote_docker:
           version: 20.10.14
@@ -13,16 +13,14 @@ jobs:
       - run:
           name: Show current branch
           command: echo $CIRCLE_BRANCH
-
-
-build_and_push_image:
       - run:
           name: Build the Image 
-          command: docker build -t 324221743401.dkr.ecr.eu-west-3.amazonaws.com/flask-image .
-      - aws-ecr/push_image:
+          command: docker build -t 324221743401.dkr.ecr.eu-west-3.amazonaws.com/flask-image
+          working_directory: /tmp         
+      - push_image:
           region: "${AWS_DEFAULT_REGION}"
-          repo: "${AWS_ECR_REGISTRY_ID}"
-          tag: "${$CIRCLE_SHA1}"
+          repo: "${AWS_ECR_REGISTRY_ID}/flask-image"
+          tag: "${CIRCLE_SHA1}"
 
 
 
