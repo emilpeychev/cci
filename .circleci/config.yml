@@ -1,34 +1,37 @@
 version: 2.1
 
 jobs:
-  build:
+  build_and_push:
     docker:
       - image: cimg/python:3.11.4
     working_directory: /tmp
     steps:
-      - setup_remote_docker:
-          version: 20.10.14
-          docker_layer_caching: true
       - checkout
       - run:
           name: Show current branch
           command: echo $CIRCLE_BRANCH
       - run:
           name: Build the Image 
-          command: docker build -t 324221743401.dkr.ecr.eu-west-3.amazonaws.com/flask-image
-          working_directory: /tmp         
-      - push_image:
-          region: "${AWS_DEFAULT_REGION}"
-          repo: "${AWS_ECR_REGISTRY_ID}/flask-image"
-          tag: "${CIRCLE_SHA1}"
+          command: docker build -t 324221743401.dkr.ecr.eu-west-3.amazonaws.com/flask-image .
+          working_directory: /tmp
 
+      - setup_remote_docker:
+          version: 20.10.14
+      - run:
+          name: Configure AWS Environment
+          command: |
+            echo 'export AWS_DEFAULT_REGION=your_region' >> $BASH_ENV
+            echo 'export AWS_ACCESS_KEY_ID=your_access_key' >> $BASH_ENV
+            echo 'export AWS_SECRET_ACCESS_KEY=your_secret_key' >> $BASH_ENV
+            source $BASH_ENV
+      - run:
+          name: Push Image to ECR
+          command: |
+            eval $(aws ecr get-login --no-include-email --region your_region)
+            docker push 324221743401.dkr.ecr.eu-west-3.amazonaws.com/flask-image:${CIRCLE_SHA1}
 
-
-
-
-# workflows:
-#   version: 2
-#   build:
-#     jobs:
-#       - build
-#       - build_and_push_image
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build_and_push
