@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  aws-ecr: circleci/aws-ecr@4.0.4
+  aws-cli: circleci/aws-cli@4.0.0
 jobs:
   build_and_push:
     docker:
@@ -9,6 +9,10 @@ jobs:
     working_directory: ~/app
     steps:
       - checkout
+      - run:
+          name: Check AWS CLI Installation
+          command: aws --version
+
       - setup_remote_docker:
           version: 20.10.14
           docker_layer_caching: true
