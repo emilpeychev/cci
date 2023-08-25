@@ -9,9 +9,6 @@ jobs:
     working_directory: ~/app
     steps:
       - checkout
-      - run:
-          name: Check AWS CLI Installation
-          command: aws --version
 
       - setup_remote_docker:
           version: 20.10.14
@@ -28,6 +25,9 @@ jobs:
             echo 'export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID' >> $BASH_ENV
             echo 'export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY' >> $BASH_ENV
             source $BASH_ENV
+      - run:
+          name: Check AWS CLI Installation
+          command: aws --version
       - run:
           name: Authenticate AWS CLI
           command: aws ecr get-login-password --region $AWS_DEFAULT_REGION | sh
