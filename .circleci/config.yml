@@ -29,7 +29,7 @@ jobs:
           name: Push Image to ECR
           command: |
             eval $(aws ecr get-login --no-include-email --region your_region)
-            docker push 324221743401.dkr.ecr.eu-west-3.amazonaws.com/flask-image:${CIRCLE_SHA1}
+            docker push 324221743401.dkr.ecr.eu-west-3.amazonaws.com/flask-image:$CIRCLE_SHA1
 
 workflows:
   build:
