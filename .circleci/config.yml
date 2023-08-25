@@ -5,19 +5,20 @@ jobs:
   build_and_push:
     docker:
       - image: cimg/python:3.11.4
-    working_directory: ~/tmp
+    working_directory: /home/stickglue/circle-ci-test
     steps:
       - checkout
       - run:
           name: Show current branch
           command: echo $CIRCLE_BRANCH
+      - setup_remote_docker:
+          version: 20.10.14
       - run:
           name: Build the Image 
           command: docker build -t 324221743401.dkr.ecr.eu-west-3.amazonaws.com/flask-image .
-          working_directory: ~/tmp
+          working_directory: /home/stickglue/circle-ci-test
 
-      - setup_remote_docker:
-          version: 20.10.14
+      - aws-cli/setup
       - run:
           name: Configure AWS Environment
           command: |
