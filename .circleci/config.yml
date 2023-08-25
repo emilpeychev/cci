@@ -25,7 +25,7 @@ jobs:
       - run:
           name: Push to ECR
           command: |
-            eval $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
+            eval $(aws ecr get-login | sed 's|https://||')
             docker push 324221743401.dkr.ecr.eu-west-3.amazonaws.com/cci:latest
 
 
