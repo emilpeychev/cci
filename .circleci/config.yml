@@ -24,7 +24,9 @@ jobs:
             source $BASH_ENV
       - run:
           name: Push to ECR
-          command: docker push 324221743401.dkr.ecr.eu-west-3.amazonaws.com/cci:latest
+          command: |
+            eval $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
+            docker push 324221743401.dkr.ecr.eu-west-3.amazonaws.com/cci:latest
 
 
 workflows:
