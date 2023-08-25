@@ -23,6 +23,10 @@ jobs:
             echo 'export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY' >> $BASH_ENV
             source $BASH_ENV
       - run:
+          name: Authenticate AWS CLI
+          command: aws ecr get-login-password --region $AWS_DEFAULT_REGION | sh
+
+      - run:
           name: Push to ECR
           command: |
             eval $(aws ecr get-login | sed 's|https://||')
