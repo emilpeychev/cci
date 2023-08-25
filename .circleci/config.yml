@@ -13,7 +13,7 @@ jobs:
           
       - run:
           name: Build the Image 
-          command: docker build -t 324221743401.dkr.ecr.eu-west-3.amazonaws.com/cci:v-01 .
+          command: docker build -t 324221743401.dkr.ecr.eu-west-3.amazonaws.com/cci:v.01 .
           working_directory: ~/app
       - run:
           name: Configure AWS Environment
@@ -24,7 +24,7 @@ jobs:
             source $BASH_ENV
       - run:
           name: Push to ECR
-          command: 324221743401.dkr.ecr.eu-west-3.amazonaws.com/cci:$CIRCLE_SHA1
+          command: docker push 324221743401.dkr.ecr.eu-west-3.amazonaws.com/cci:$CIRCLE_SHA1
 
 
 workflows:
