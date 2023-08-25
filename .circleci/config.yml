@@ -1,8 +1,4 @@
 version: 2.1
-orbs:
-  aws-cli: circleci/aws-cli@4.0.0
-  aws-ecr: circleci/aws-ecr@9.0.0
-
 
 jobs:
   build_and_push:
@@ -11,17 +7,14 @@ jobs:
     working_directory: ~/app
     steps:
       - checkout
-      - run:
-          name: Show current branch
-          command: echo $CIRCLE_BRANCH
       - setup_remote_docker:
           version: 20.10.14
+          docker_layer_caching: true
+          
       - run:
           name: Build the Image 
           command: docker build -t 324221743401.dkr.ecr.eu-west-3.amazonaws.com/flask-image .
           working_directory: ~/app
-
-      - aws-cli/setup
       - run:
           name: Configure AWS Environment
           command: |
@@ -30,10 +23,9 @@ jobs:
             echo 'export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY' >> $BASH_ENV
             source $BASH_ENV
       - run:
-          name: Push Image to ECR
-          command: |
-            eval $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
-            docker push 324221743401.dkr.ecr.eu-west-3.amazonaws.com/flask-image:latest
+          name: Puh to ECR
+          command: docker push 324221743401.dkr.ecr.eu-west-3.amazonaws.com/flask-image:$CIRCLE_SHA1
+
 
 workflows:
   build:
