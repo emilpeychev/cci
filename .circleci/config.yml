@@ -16,8 +16,7 @@ jobs:
       - run:
           name: Build the Image 
           command: docker build -t 324221743401.dkr.ecr.eu-west-3.amazonaws.com/flask-image .
-          working_directory: /home/stickglue/circle-ci-test
-
+          working_directory: /tmp
       - aws-cli/setup
       - run:
           name: Configure AWS Environment
