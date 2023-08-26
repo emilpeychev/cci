@@ -15,7 +15,7 @@ jobs:
 
       - run:
           name: Build the Image 
-          command: docker build -t 324221743401.dkr.ecr.eu-west-3.amazonaws.com/cci:v.01 .
+          command: docker build -t 324221743401.dkr.ecr.eu-west-3.amazonaws.com/cci .
           working_directory: ~/app
 
       - run:
@@ -33,7 +33,8 @@ jobs:
       - run:
           name: Push to ECR
           command: |
-            eval $(aws ecr get-login --no-include-email)
+            eval $(aws ecr get-login --no-include-email --region eu-west-1) > login.sh
+            
             docker push 324221743401.dkr.ecr.eu-west-3.amazonaws.com/cci
 
 workflows:
