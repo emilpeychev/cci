@@ -34,8 +34,7 @@ jobs:
           name: Push to ECR
           command: |
             eval $(aws ecr get-login --no-include-email --region eu-west-1) > login.sh
-            
-            docker push 324221743401.dkr.ecr.eu-west-3.amazonaws.com/cci
+            docker push 324221743401.dkr.ecr.eu-west-3.amazonaws.com/cci:latest
 
 workflows:
   build:
