@@ -23,7 +23,6 @@ jobs:
           command: |
              sudo apt -y -qq update
              sudo apt install -y awscli
-             sudo apt install -y python-pip python-dev build-essentials
       - run:
           name: Configure AWS Environment
           command: |
