@@ -10,7 +10,7 @@ jobs:
       - checkout
 
       - setup_remote_docker:
-          version: 20.10.14
+          version: 23.0.6
           docker_layer_caching: true
 
       - run:
