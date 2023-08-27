@@ -4,7 +4,7 @@ jobs:
 
   build_and_push:
     docker:
-      - image: python:3.9-slim-bullseye
+      - image: python
     working_directory: ~/app
     steps:
       - checkout
