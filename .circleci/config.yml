@@ -16,7 +16,7 @@ jobs:
           name: Build the Image 
           command: | 
             docker build -t cci .
-            docker tag cci 324221743401.dkr.ecr.eu-west-3.amazonaws.com/cci
+            docker tag cci 324221743401.dkr.ecr.eu-west-3.amazonaws.com/cci:${CIRCLE_SHA1}
 
           working_directory: ~/app
 
