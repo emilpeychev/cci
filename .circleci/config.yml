@@ -15,9 +15,9 @@ jobs:
       - run:
           name: Build the Image 
           command: | 
-            IMAGE_TAG=$(date +%Y%m%d%H%M%S)
-            docker build -t cci:$IMAGE_TAG .
-            docker tag cci:$IMAGE_TAG 324221743401.dkr.ecr.eu-west-3.amazonaws.com/cci:$IMAGE_TAG
+            docker build -t cci .
+            docker tag cci 324221743401.dkr.ecr.eu-west-3.amazonaws.com/cci
+
           working_directory: ~/app
 
       - run:
@@ -38,8 +38,8 @@ jobs:
           name: Push to ECR
           command: |
             eval $(aws ecr get-login --no-include-email --region eu-west-3)
-            IMAGE_TAG=$(date +%Y%m%d%H%M%S)
-            docker push 324221743401.dkr.ecr.eu-west-3.amazonaws.com/cci:$IMAGE_TAG
+            docker push 324221743401.dkr.ecr.eu-west-3.amazonaws.com/cci:${CIRCLE_SHA1}
+
 
 
 workflows:
