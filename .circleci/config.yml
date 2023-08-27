@@ -36,7 +36,7 @@ jobs:
       - run:
           name: Push to ECR
           command: |
-            eval $(aws ecr get-login-password --no-include-email --region eu-west-3) | docker login --username AWS --password-stdin 324221743401.dkr.ecr.eu-west-3.amazonaws.com/cci
+            $(aws ecr get-login --no-include-email --region eu-west-3)
             docker push 324221743401.dkr.ecr.eu-west-3.amazonaws.com/cci:latest
 
 
