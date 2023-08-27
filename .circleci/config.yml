@@ -24,8 +24,6 @@ jobs:
           command: |
              sudo apt -y -qq update
              sudo apt install -y awscli
-             sudo apt install -y python3-pip
-             sudo pip3 install --upgrade awscli
       - run:
           name: Configure AWS Environment
           command: |
