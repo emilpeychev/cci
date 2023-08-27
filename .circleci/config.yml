@@ -15,8 +15,9 @@ jobs:
       - run:
           name: Build the Image 
           command: | 
-            docker build -t cci .
-            docker tag cci:latest 324221743401.dkr.ecr.eu-west-3.amazonaws.com/cci:latest
+            IMAGE_TAG=$(date +%Y%m%d%H%M%S)
+            docker build -t cci:$IMAGE_TAG .
+            docker tag cci:$IMAGE_TAG 324221743401.dkr.ecr.eu-west-3.amazonaws.com/cci:$IMAGE_TAG
           working_directory: ~/app
 
       - run:
@@ -24,6 +25,8 @@ jobs:
           command: |
              sudo apt -y -qq update
              sudo apt install -y awscli
+             sudo apt install -y python3-pip
+             sudo pip3 install --upgrade awscli
       - run:
           name: Configre AWS Envirnment
           command: |
@@ -35,7 +38,8 @@ jobs:
           name: Push to ECR
           command: |
             eval $(aws ecr get-login --no-include-email --region eu-west-3)
-            docker push 324221743401.dkr.ecr.eu-west-3.amazonaws.com/cci:latest
+            IMAGE_TAG=$(date +%Y%m%d%H%M%S)
+            docker push 324221743401.dkr.ecr.eu-west-3.amazonaws.com/cci:$IMAGE_TAG
 
 
 workflows:
