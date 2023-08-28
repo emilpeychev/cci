@@ -40,8 +40,6 @@ jobs:
             eval $(aws ecr get-login --no-include-email --region eu-west-3)
             docker push 324221743401.dkr.ecr.eu-west-3.amazonaws.com/cci:${CIRCLE_SHA1}
 
-
-
 workflows:
   build:
     jobs:
