@@ -5,6 +5,7 @@ FROM python:3.11.4
 WORKDIR /app
 
 # Copy the requirements file and install dependencies
+RUN pip install --upgrade pip
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 
