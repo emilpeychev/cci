@@ -1,7 +1,6 @@
 version: 2.1
-
 orbs:
-  snyk: snyk/snyk@1.7.2
+  trivy-orb: fifteen5/trivy-orb@1.0.0
 
 jobs:
 
@@ -11,8 +10,6 @@ jobs:
     working_directory: ~/app
     steps:
       - checkout
-      - snyk/scan:
-          token-variable: SNYK_TOKEN
 
       - setup_remote_docker:
           docker_layer_caching: false
@@ -21,7 +18,10 @@ jobs:
           name: Build the Image 
           command: | 
             docker build -t cci .
+      
             docker tag cci 324221743401.dkr.ecr.eu-west-3.amazonaws.com/cci:${CIRCLE_SHA1}
+      - trivy/scan:
+          args: '--no-progress --exit-code 1 image cci'
 
           working_directory: ~/app
 
@@ -48,5 +48,5 @@ jobs:
 workflows:
   build:
     jobs:
-
+      - build_and_scan
       - build_and_push
