@@ -42,7 +42,7 @@ jobs:
             docker push 324221743401.dkr.ecr.eu-west-3.amazonaws.com/cci:${CIRCLE_SHA1}
 
       - trivy-orb/scan:
-          args: '--no-progress --exit-code 1 image busybox'
+          args: '--no-progress --exit-code 1 image 324221743401.dkr.ecr.eu-west-3.amazonaws.com/cci:${CIRCLE_SHA1}'
 
 workflows:
   build:
