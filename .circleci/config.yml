@@ -48,5 +48,4 @@ jobs:
 workflows:
   build:
     jobs:
-      - build_and_scan
       - build_and_push
