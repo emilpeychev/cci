@@ -36,7 +36,7 @@ jobs:
     working_directory: ~/app
 ```
 
-1. This is the image og choice from [circleci images](https://circleci.com/developer/images)/ [more](https://circleci.com/developer/images/image/cimg/python). Nb! if you change to docker images you need to make sure that all dependencies are present in that image. Otherwise you will get an error exit code 127 due to missing environmental parameters.
+1. This is the image of choice from [circleci images](https://circleci.com/developer/images)/ [more](https://circleci.com/developer/images/image/cimg/python). Nb! if you change to docker images you need to make sure that all dependencies are present in that image. Otherwise you will get an Error exit code 127 due to missing environmental parameters.
 2. Woking directory is a place where the code is build in the container.
 
 ```sh
@@ -62,6 +62,6 @@ jobs:
 
 - It caches the layers for your images and builds much faster.
 
-5.Run Build image
+5.Build the Image
 
 - Just pass a command as in docker.
