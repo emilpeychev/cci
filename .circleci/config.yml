@@ -18,11 +18,7 @@ jobs:
           name: Build the Image 
           command: | 
             docker build -t cci .
-      
             docker tag cci 324221743401.dkr.ecr.eu-west-3.amazonaws.com/cci:${CIRCLE_SHA1}
-      - trivy/scan:
-          args: '--no-progress --exit-code 1 image cci'
-
           working_directory: ~/app
 
       - run:
@@ -44,6 +40,9 @@ jobs:
           command: |
             eval $(aws ecr get-login --no-include-email --region eu-west-3)
             docker push 324221743401.dkr.ecr.eu-west-3.amazonaws.com/cci:${CIRCLE_SHA1}
+
+      - trivy/scan:
+          args: '--no-progress --exit-code 1 image 324221743401.dkr.ecr.eu-west-3.amazonaws.com/cci:${CIRCLE_SHA1}'
 
 workflows:
   build:
