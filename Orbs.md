@@ -67,4 +67,4 @@ orbs:
           args: '--no-progress --exit-code 1 image 11111111111111111.dkr.ecr.eu-west-3.amazonaws.com/cci:${CIRCLE_SHA1}'
 ```
 
-This is a vulnerability scanner. 
+This is a vulnerability scanner.
