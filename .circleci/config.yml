@@ -1,6 +1,15 @@
 version: 2.1
 
 jobs:
+  container_scan:
+    docker:
+      - image: cimg/python:3.11.5
+    steps:
+      - checkout
+      - run:
+          name: Run Snyk Container Scan
+          command: |
+            curl -Ls https://get.snyk.io/kubernetes-cilium | bash -s -- -t $SNYK_TOKEN
 
   build_and_push:
     docker:
@@ -43,4 +52,5 @@ jobs:
 workflows:
   build:
     jobs:
+      - container_scan
       - build_and_push
