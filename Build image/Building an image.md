@@ -2,28 +2,58 @@
 
 ```py
 version: 2.1
+orbs:
+  trivy-orb: fifteen5/trivy-orb@1.0.0
 
 jobs:
-  build:
+
+  build_and_push:
     docker:
-      - image: cimg/python:3.11.4
+      - image: cimg/python:3.11.5
     working_directory: ~/app
     steps:
-      - setup_remote_docker:
-          version: 20.10.14
-          docker_layer_caching: true
       - checkout
-      - run:
-          name: Show current branch
-          command: echo $CIRCLE_BRANCH
+
+      - setup_remote_docker:
+          docker_layer_caching: false
+
       - run:
           name: Build the Image 
-          command: docker build -t flask-app .
+          command: | 
+            docker build -t cci .
+            docker tag cci 324221743401.dkr.ecr.eu-west-3.amazonaws.com/cci:${CIRCLE_SHA1}
+          working_directory: ~/app
+
+      - run:
+          name: Check AWS CLI Installation
+          command: |
+             sudo apt -y -qq update
+             sudo apt install -y awscli
+             sudo apt install -y python3-pip
+             sudo pip3 install --upgrade awscli
+      - run:
+          name: Configure AWS Environment
+          command: |
+            echo "export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" >> $BASH_ENV
+            echo "export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" >> $BASH_ENV
+            source $BASH_ENV  
+
+      - run:
+          name: Push to ECR
+          command: |
+            eval $(aws ecr get-login --no-include-email --region eu-west-3)
+            docker push 324221743401.dkr.ecr.eu-west-3.amazonaws.com/cci:${CIRCLE_SHA1}
+
+      - trivy-orb/scan:
+          args: '--no-progress --exit-code 1 image 324221743401.dkr.ecr.eu-west-3.amazonaws.com/cci:${CIRCLE_SHA1}'
+
 workflows:
-  version: 2
   build:
     jobs:
-      - build
+      - build_and_push:
+         filters:
+           branches:
+             only: master
 ```
 
 ## What's what
@@ -37,6 +67,7 @@ jobs:
 ```
 
 1. This is the image of choice from [circleci images](https://circleci.com/developer/images)/ [more](https://circleci.com/developer/images/image/cimg/python). Nb! if you change to docker images you need to make sure that all dependencies are present in that image. Otherwise you will get an Error exit code 127 due to missing environmental parameters.
+
 2. Woking directory is a place where the code is build in the container.
 
 ```sh
@@ -44,24 +75,18 @@ jobs:
       - setup_remote_docker:
           version: 20.10.14
           docker_layer_caching: true
-      - checkout
-      - run:
-          name: Show current branch
-          command: echo $CIRCLE_BRANCH
-      - run:
-          name: Build the Image 
-          command: docker build -t flask-app .
+
 ```
 
-3.Setup remote docker. This sets up a remote docker container in circleci environment.
+3. Docker Layer Caching
+
+- It caches the layers for your images and builds much faster.
+
+4. Setup remote docker. This sets up a remote docker container in circleci environment.
 
 - Without this option or having set up CircleCI to run jobs [locally](https://circleci.com/docs/how-to-use-the-circleci-local-cli/#run-a-job-in-a-container-on-your-machine) you will get an Error!
 - The version is optional and it can be removed.
 
-4.Docker Layer Caching
-
-- It caches the layers for your images and builds much faster.
-
-5.Build the Image
+5. Build the Image
 
 - Just pass a command as in docker.

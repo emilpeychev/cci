@@ -1,3 +1,9 @@
 flask
 pytest
+snyk-fix-0ff95a0ead03a1cbabc07acd5794cf63
 werkzeug>=3.0.1 # not directly required, pinned by Snyk to avoid a vulnerability
+snyk-fix-765a362b186844f8fcf4473e97473316
+werkzeug>=3.0.1 # not directly required, pinned by Snyk to avoid a vulnerability
+six
+master
+

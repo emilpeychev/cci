@@ -6,7 +6,7 @@ jobs:
 
   build_and_push:
     docker:
-      - image: cimg/python:3.11.5
+      - image: cimg/python:3.12
     working_directory: ~/app
     steps:
       - checkout
@@ -18,7 +18,7 @@ jobs:
           name: Build the Image 
           command: | 
             docker build -t cci .
-            docker tag cci 324221743401.dkr.ecr.eu-west-3.amazonaws.com/cci:${CIRCLE_SHA1}
+            docker tag cci $ECR_REGISTRY/cci:$(git rev-parse --short HEAD)
           working_directory: ~/app
 
       - run:
@@ -39,12 +39,16 @@ jobs:
           name: Push to ECR
           command: |
             eval $(aws ecr get-login --no-include-email --region eu-west-3)
-            docker push 324221743401.dkr.ecr.eu-west-3.amazonaws.com/cci:${CIRCLE_SHA1}
+            docker push $ECR_REGISTRY/cci:$(git rev-parse --short HEAD)
 
       - trivy-orb/scan:
-          args: '--no-progress --exit-code 1 image 324221743401.dkr.ecr.eu-west-3.amazonaws.com/cci:${CIRCLE_SHA1}'
+          args: '--no-progress --exit-code 1 image $ECR_REGISTRY/cci:$(git rev-parse --short HEAD)'
 
 workflows:
+  version: 2
   build:
     jobs:
-      - build_and_push
+      - build_and_push:
+          filters:
+            branches:
+              only: master
