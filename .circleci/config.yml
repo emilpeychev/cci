@@ -6,7 +6,7 @@ jobs:
 
   build_and_push:
     docker:
-      - image: python:3.12-bookworm
+      - image: cimg/python:3.12
     working_directory: ~/app
     steps:
       - checkout
