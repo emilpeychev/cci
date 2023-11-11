@@ -5,8 +5,8 @@ orbs:
 jobs:
 
   build_and_push:
-    machine:
-      image: ubuntu-2204:2022.04.2
+    docker:
+      - image: python:3.12-bookworm
     working_directory: ~/app
     steps:
       - checkout
@@ -51,7 +51,4 @@ workflows:
       - build_and_push:
           filters:
             branches:
-              only: 
-                - master
-                - machine
-
+              only: master
