@@ -1,12 +1,12 @@
 # Use the official Python image as the base image
-FROM python:3.11.5
+FROM python:3.12
 
 # Set the working directory within the container
 WORKDIR /app
 
 # Copy the requirements file and install dependencies
 RUN pip install --upgrade pip
-COPY requirements.txt requirements.txt
+COPY requirements.txt /app/requirements.txt
 RUN pip install -r requirements.txt
 
 # Copy the rest of the application code to the container
