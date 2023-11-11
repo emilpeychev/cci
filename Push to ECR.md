@@ -130,3 +130,15 @@ Login to ECR.
             docker push 1111111111111.dkr.ecr.eu-west-3.amazonaws.com/cci:${CIRCLE_SHA1}
 Push the image to the repo.
 ```
+
+### Limit Pipeline only when pushed to master branch
+
+```xml
+workflows:
+  build:
+    jobs:
+      - build_and_push:
+          filters:
+            branches:
+              only: master
+```
