@@ -6,7 +6,7 @@ jobs:
 
   build_and_push:
     docker:
-      - image: cimg/python:3.12
+      - image: cimg/python:3.11.5
     working_directory: ~/app
     steps:
       - checkout
