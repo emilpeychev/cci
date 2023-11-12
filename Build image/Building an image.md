@@ -87,6 +87,6 @@ jobs:
 - Without this option or having set up CircleCI to run jobs [locally](https://circleci.com/docs/how-to-use-the-circleci-local-cli/#run-a-job-in-a-container-on-your-machine) you will get an Error!
 - The version is optional and it can be removed.
 
-5. Build the Image
+5. Build the Image.
 
 - Just pass a command as in docker.

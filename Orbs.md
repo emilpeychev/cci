@@ -2,69 +2,214 @@
 
 Working with Orbs is using automatic presets.
 
+## Orb Usage in Configuration
+
 ```sh
 version: 2.1
 orbs:
-  trivy-orb: fifteen5/trivy-orb@1.0.0
+  my-orb: circleci/my-orb@1.0.0
 
 jobs:
-
-  build_and_push:
-    docker:
-      - image: cimg/python:3.11.5
-    working_directory: ~/app
-    steps:
-      - checkout
-
-      - setup_remote_docker:
-          docker_layer_caching: false
-
-      - run:
-          name: Build the Image 
-          command: | 
-            docker build -t cci .
-            docker tag cci 11111111111111111.dkr.ecr.eu-west-3.amazonaws.com/cci:${CIRCLE_SHA1}
-          working_directory: ~/app
-
-      - run:
-          name: Check AWS CLI Installation
-          command: |
-             sudo apt -y -qq update
-             sudo apt install -y awscli
-             sudo apt install -y python3-pip
-             sudo pip3 install --upgrade awscli
-      - run:
-          name: Configure AWS Environment
-          command: |
-            echo "export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" >> $BASH_ENV
-            echo "export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" >> $BASH_ENV
-            source $BASH_ENV  
-
-      - run:
-          name: Push to ECR
-          command: |
-            eval $(aws ecr get-login --no-include-email --region eu-west-3)
-            docker push 324221743401.dkr.ecr.eu-west-3.amazonaws.com/cci:${CIRCLE_SHA1}
-
-      - trivy-orb/scan:
-          args: '--no-progress --exit-code 1 image 11111111111111111.dkr.ecr.eu-west-3.amazonaws.com/cci:${CIRCLE_SHA1}'
-
-workflows:
   build:
-    jobs:
-      - build_and_push
+    docker:
+      - image: 'circleci/node:12.16.1'
+    steps:
+      - my-orb/my-command
+
 ```
 
-## Orb name matching
-
-Make sure these match:
+Explanation:
 
 ```sh
-orbs:
-  trivy-orb: fifteen5/trivy-orb@1.0.0
-
-        - trivy-orb/scan:
-          args: '--no-progress --exit-code 1 image 11111111111111111.dkr.ecr.eu-west-3.amazonaws.com/cci:${CIRCLE_SHA1}'
+    Version: Specifies the CircleCI configuration version.
+    Orbs: Declares the usage of an Orb named "my-orb" at version 1.0.0.
+    Jobs: Defines a job named "build" using configurations from the declared orb.
+        Docker: Specifies a Docker image for the job.
+        Steps: Executes a custom command, "my-command," from the "my-orb."
 ```
 
-This is a vulnerability scanner.
+## Orb Configuration
+
+```sh
+version: 2.1
+orbs:
+  my-orb: circleci/my-orb@1.0.0
+
+jobs:
+  build:
+    docker:
+      - image: 'circleci/node:12.16.1'
+    steps:
+      - my-orb/my-command
+
+commands:
+  my-command:
+    description: "Run a custom command"
+    steps:
+      - run: echo "Running custom command"
+
+```
+
+Explanation:
+
+```sh
+    Orbs: Declares the usage of an Orb named "my-orb" at version 1.0.0.
+    Jobs: Defines a job named "build" using configurations from the declared orb.
+        Docker: Specifies a Docker image for the job.
+        Steps: Executes a custom command, "my-command," from the "my-orb."
+    Commands: Defines a custom command named "my-command" within the orb.
+        Description: Provides a description for the custom command.
+        Steps: Specifies the steps to be executed when the custom command is called, such as echoing a message.
+```
+
+### Core Context for Orbs
+
+```sh
+Orbs: Orbs in CircleCI are packages of reusable configuration elements, providing a way to share and reuse common pieces of pipeline logic.
+
+Usage: In the CircleCI configuration, orbs are declared at the top of the file. They encapsulate predefined configurations, commands, and jobs that can be utilized in your pipeline.
+
+Commands: Orbs often include custom commands, which are encapsulated sets of steps. These commands abstract away complex processes, promoting modularization and reuse in your configuration.
+
+```
+
+### Configuration with AWS-CLI Orb
+
+```sh
+version: 2.1
+orbs:
+  aws-cli: circleci/aws-cli@1.0.0
+
+jobs:
+  deploy:
+    docker:
+      - image: 'circleci/node:12.16.1'
+    steps:
+      - aws-cli/install
+      - run:
+          name: Deploy to AWS
+          command: aws s3 sync . s3://my-s3-bucket
+
+```
+
+Explanation:
+
+```sh
+    Version: Specifies the CircleCI configuration version.
+    Orbs: Declares the usage of the AWS-CLI Orb from CircleCI at version 1.0.0.
+    Jobs: Defines a job named "deploy" using configurations from the AWS-CLI orb.
+        Docker: Specifies a Docker image for the job.
+        Steps: Utilizes the AWS-CLI orb to install the AWS CLI tool and then deploys the code to an S3 bucket.
+```
+
+### Configuration for AWS-CLI Orb
+
+
+```sh
+version: 2.1
+orbs:
+  aws-cli: circleci/aws-cli@1.0.0
+
+jobs:
+  deploy:
+    docker:
+      - image: 'circleci/node:12.16.1'
+    steps:
+      - aws-cli/install
+      - run:
+          name: Deploy to AWS
+          command: aws s3 sync . s3://my-s3-bucket
+
+commands:
+  aws-cli/install:
+    description: "Install AWS CLI"
+    steps:
+      - run: curl -o /tmp/aws-cli.zip https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
+      - run: unzip /tmp/aws-cli.zip -d /tmp
+      - run: sudo /tmp/aws/install
+
+```
+
+Explanation:
+
+```sh
+    Orbs: Declares the usage of the AWS-CLI Orb from CircleCI at version 1.0.0.
+    Jobs: Defines a job named "deploy" using configurations from the AWS-CLI orb.
+        Docker: Specifies a Docker image for the job.
+        Steps: Utilizes the AWS-CLI orb to install the AWS CLI tool and then deploys the code to an S3 bucket.
+    Commands: Defines a custom command named "aws-cli/install" within the AWS-CLI orb.
+        Description: Provides a description for the custom command.
+        Steps: Specifies the steps to install the AWS CLI tool, including downloading and extracting it.
+```
+
+### Configuration with Kubernetes Orb
+
+```sh
+version: 2.1
+orbs:
+  kubernetes: circleci/kubernetes@1.0.0
+
+jobs:
+  deploy_to_k8s:
+    docker:
+      - image: 'circleci/node:12.16.1'
+    steps:
+      - kubernetes/install
+      - run:
+          name: Deploy to Kubernetes
+          command: kubernetes/deploy
+
+```
+
+Explanation:
+
+```sh
+    Version: Specifies the CircleCI configuration version.
+    Orbs: Declares the usage of the Kubernetes Orb from CircleCI at version 1.0.0.
+    Jobs: Defines a job named "deploy_to_k8s" using configurations from the Kubernetes orb.
+        Docker: Specifies a Docker image for the job.
+        Steps: Utilizes the Kubernetes orb to install Kubernetes tools and then deploys the application to a Kubernetes cluster.
+```
+
+### Configuration for Kubernetes Orb
+
+```sh
+version: 2.1
+orbs:
+  kubernetes: circleci/kubernetes@1.0.0
+
+jobs:
+  deploy_to_k8s:
+    docker:
+      - image: 'circleci/node:12.16.1'
+    steps:
+      - kubernetes/install
+      - run:
+          name: Deploy to Kubernetes
+          command: kubernetes/deploy
+
+commands:
+  kubernetes/install:
+    description: "Install Kubernetes tools"
+    steps:
+      - run: curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+      - run: chmod +x ./kubectl && sudo mv ./kubectl /usr/local/bin/kubectl
+
+  kubernetes/deploy:
+    description: "Deploy to Kubernetes cluster"
+    steps:
+      - run: kubectl apply -f k8s-deployment.yaml
+
+```
+
+Explanation:
+
+```sh
+    Orbs: Declares the usage of the Kubernetes Orb from CircleCI at version 1.0.0.
+    Jobs: Defines a job named "deploy_to_k8s" using configurations from the Kubernetes orb.
+        Docker: Specifies a Docker image for the job.
+        Steps: Utilizes the Kubernetes orb to install Kubernetes tools and then deploys the application to a Kubernetes cluster.
+    Commands: Defines custom commands within the Kubernetes orb.
+        kubernetes/install: Installs Kubernetes tools, such as kubectl.
+        kubernetes/deploy: Deploys the application to a Kubernetes cluster using a Kubernetes manifest file.
+```
