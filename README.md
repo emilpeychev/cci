@@ -40,17 +40,17 @@ Minimal version allowed.
 
 A Workflow is comprised of one or more uniquely named jobs.
 
-* Isolation: Each job runs in its own isolated environment, which helps ensure that the job's execution doesn't interfere with other jobs.
+* Isolation: Jobs run independently, preventing interference with other jobs.
 
-* Independence: Jobs can be run independently and in parallel, which speeds up the overall pipeline execution.
+* Independence: Jobs can run concurrently, enhancing overall pipeline speed.
 
-* Definition: A job's definition includes the steps, commands, environment settings, and other configuration needed to accomplish its tasks.
+* Definition: Each job includes steps, commands, and configurations needed to fulfill its tasks.
 
-* Dependencies: Jobs can have dependencies on other jobs, meaning they can be triggered to run only after certain conditions or previous jobs have been met.
+* Dependencies: Jobs may have dependencies on others, running only when specific conditions or preceding jobs are met.
 
-* Artifacts: Jobs can produce artifacts, which are files or data generated during the job's execution. These artifacts can be used in subsequent jobs or stages of the pipeline.
+* Artifacts: Jobs can produce artifacts, files or data used in subsequent pipeline stages.
 
-* Execution Environment: Jobs can run in different execution environments, such as Docker containers, virtual machines, or other platforms.
+* Execution Environment: Jobs can run in different environments like Docker containers or virtual machines.
 
 ```py
 jobs: #name
@@ -67,10 +67,10 @@ jobs: #name
           command: make test
 ```
 
-## Environments
+## Runtime Environments
 
 ```txt
-Environments:
+Runtime Environments:
 
 - docker/ machine/ mac/
 - CircleCI offers several execution environments to run your jobs:
@@ -101,14 +101,65 @@ jobs:
 
 Jobs are part of a workflow named "say-hello-workflow" which specifies the sequence of jobs to be executed.
 
+### Filters
+
+CircleCI allows you to apply filters to control when jobs run, based on conditions such as branch names, tags, or event types.
+
+```sh
+workflows:
+  version: 2
+  say-hello-workflow:
+    jobs:
+      - say-hello:
+          filters:
+            branches:
+              only:
+                - main
+            tags:
+              ignore: /.*/
+
+```
+
+In this example, the say-hello job will run only on the main branch and ignore any tag events.
+
+### Contexts
+
+Contexts in CircleCI are used to manage and securely store environment variables required for jobs. These variables might include sensitive information like API keys, credentials, or configuration settings. Using contexts helps in centralizing and organizing this sensitive information, making it easier to maintain and update.
+
+```sh
+version: 2.1
+
+jobs:
+  deploy:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - checkout
+      - run:
+          name: Deploy
+          command: make deploy
+  say-hello:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - checkout
+      - run:
+          name: "Say hello"
+          command: "echo Hello, World!"
+          environment:
+            API_KEY: ${{ secrets.API_KEY }}
+            DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+```
+
+In this example, sensitive information such as API_KEY and DATABASE_URL is stored securely in a context. These values can then be referenced in the job configuration using ${{ secrets.CONTEXT_NAME.VARIABLE_NAME }}.
+
 ### Summary
 
-```txt
-Fetching Code/ The "checkout" step connects Git repository and fetches the latest version of your codebase.
-- Checkout is always first. followed by 'run commands'.
-
-Working Directory: The fetched code is placed into a designated working directory within the CircleCI environment/executor. This directory becomes the base directory for all subsequent steps in your pipeline. 
-Any steps you define under "run" or other step types will operate within this working directory.
-
-Subsequent Steps: After the "checkout" step, you can define other steps that use the checked-out code. For example, you might have steps for Building, Testing, and Deploying your code. 
-```
+* Fetching CodeThe `checkout` step connects to the `Git Repository`, fetching the latest code.
+Checkout is always first. followed by `run commands`.
+* Working Directory: Code is placed in a designated `working directory within the CircleCI environment`.
+* Subsequent Steps: After "checkout," define `steps` for `building`, `testing`, and `deploying code`.
+* Workflow Orchestration: The `workflow` section specifies the sequence in which jobs are executed.
+* Filters: Allow you to `control when jobs run` based on `conditions like branch names or tags`.
+* Contexts: Securely manage and `reference environment variables` using contexts, particularly useful for storing sensitive information.
