@@ -54,4 +54,4 @@ workflows:
             branches:
               only: 
                 - main
-                - dummy
+
