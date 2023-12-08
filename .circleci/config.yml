@@ -54,4 +54,5 @@ workflows:
             branches:
               only: 
                 - main
+                - test
 
